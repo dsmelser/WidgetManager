@@ -1,0 +1,84 @@
+The goal is to create an Angular application with data provided by a Spring Boot REST service, secured with Spring Security using jwt (JSON web token).
+
+In this system, we'll have 3 roles: User, Author, and Admin.
+
+The data served will all be "widgets" of different security scopes.  Every widget will have an integer id, and a string name.
+
+	PublicWidget - These are availble for everyone, including unautheticated users to see.  Admins should be able to perform CRUD operations.  
+
+	RoleWidget - These are available for logged in users to see, and for Authors and Admins to have full CRUD access.
+
+	PersonalWidget - There also have a user id reference.  Each user should have full CRUD access to all of their own widgets.
+		Admins should have full CRUD access to all PersonalWidgets.
+
+
+Additionally, Admins must be able to have full CRUD access to all user data.
+
+
+
+1. Spring Boot REST API
+
+	Desired Endpoints:
+
+		GET 	/api/public/wdgt 		get all PublicWidgets						all users, even unauthenticated
+		GET 	/api/public/wdgt/{id} 	get PublicWidget by id 						all users, even unauthenticated
+		POST 	/api/public/wdgt 		create new PublicWidget from body data		Admin only
+		PUT 	/api/public/wdgt       	edit existing PublicWidget from body data	Admin only
+		DELETE	/api/public/wdgt/{id}	delete existing PublicWidget by id 			Admin only
+
+
+
+		GET 	/api/role/wdgt 			get all RoleWidgets							all autheticated users
+		GET 	/api/role/wdgt/{id} 	get RoleWidget by id 						all autheticated users
+		POST 	/api/role/wdgt 			create new RoleWidget from body data		Admin or Author
+		PUT 	/api/role/wdgt       	edit existing RoleWidget from body data		Admin or Author
+		DELETE	/api/role/wdgt/{id}		delete existing PublicWidget by id 			Admin or Author
+
+
+		GET 	/api/personal/wdgt 			get all PersonalWidget for current user, or all PersonalWidgets if current user is Admin
+		GET 	/api/personal/wdgt/{id} 	get PersonalWidget by id 						either the associated user OR Admin
+		POST 	/api/personal/wdgt 			create new PersonalWidget from body data		all authenticated users
+		PUT 	/api/personal/wdgt       	edit existing PersonalWidget from body data		either the associated user OR Admin
+		DELETE	/api/personal/wdgt/{id}		delete existing PersonalWidget by id 			either the associated user OR Admin
+
+
+		GET 	/api/userdata 			get all users								Admin only
+		GET 	/api/userdata/{id} 		get user by id 								Admin only
+		POST 	/api/userdata 			create new user from body data				Admin only
+		PUT 	/api/userdata       	edit existing user from body data			Admin only
+		DELETE	/api/userdata/{id}		delete existing user by id 					Admin only
+
+	
+
+2. Angular Front-End
+
+	Desired Routes:
+
+		/			dashboard of PublicWidgets
+						should be CRUDable by Admin users
+						all others should just see a list of PublicWidgets
+
+		/login		traditional login page with username/password
+						should be unauthenticated users
+						all others should be directed to /
+
+		/register	traditional account registration page with email, username, password, and password verification
+						should be unauthenticated users
+						all others should be directed to /
+
+		/content	dashboard of RoleWidgets
+						should be CRUDable by Admin and Author users
+						User users should just see a list of RoleWidgets
+						unautheticated users should be directed to /login
+
+		/profile	dashboard of PersonalWidgets
+						should be CRUDable by the currently logged in user (but should only see their own unless they are an Admin)
+						unautheticated users should be directed to /login
+
+		/useradmin	dashboard of user data
+						should be CRUDable by Admins
+						Users and Authors should be given an error message (403?)
+						unauthenticated users should be directed to /login
+
+
+
