@@ -17,6 +17,7 @@ public class User {
 
     @NotBlank       //indicates that an empty string or just spaces or tabs is not valid
     @Size(max = 20)
+    @Column(unique=true)
     private String username;
 
 
@@ -37,6 +38,17 @@ public class User {
             //tells Hibernate that a foreign key called role_id should link to the @Id field of the Role entity
     )
     private Set<Role> roles = new HashSet<>();
+
+
+    public User( @NotBlank @Size(max=20) String username, @NotBlank @Size(max=50) String email, @NotBlank @Size(max=120) String password ){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(){
+        
+    }
 
 
     public Integer getId() {

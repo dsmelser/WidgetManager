@@ -22,7 +22,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
         //TODO: add logger
 
-        httpServletResponse.sendError( HttpServletResponse.SC_UNAUTHORIZED, "Error: unauthorize user");
+        httpServletResponse.sendError( HttpServletResponse.SC_UNAUTHORIZED, "Error: unauthorized user");
 
     }
 }
