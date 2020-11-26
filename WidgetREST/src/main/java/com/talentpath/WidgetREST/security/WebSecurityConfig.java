@@ -7,11 +7,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 //@Configuration      //tells Spring that this is to be used once for config
 @EnableWebSecurity
@@ -30,8 +32,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         super.configure(auth);
     }
 
+    //sets up the filter that will decode incoming jwts into
+    //the basic username/password authentication tokens
+    @Bean
+    public AuthTokenFilter jwtFilter() {
+        return new AuthTokenFilter();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+
         http
                 .cors()
                 .and()
@@ -41,10 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS )
                 .and()
-                    .authorizeRequests()
-                        .antMatchers( "/" ).permitAll()
 
-                        //TODO: limit this to GET
+                .authorizeRequests()
+
+                .antMatchers( HttpMethod.POST, "/api/auth/signin").permitAll()
+                .antMatchers( HttpMethod.POST, "/api/auth/signup").permitAll()
+
                 .antMatchers( HttpMethod.GET, "/api/public/wdgt", "/api/public/wdgt/**") .permitAll()
                 .antMatchers( HttpMethod.POST, "/api/public/wdgt" ).hasRole("ADMIN")
                 .antMatchers( HttpMethod.PUT, "/api/public/wdgt" ).hasRole("ADMIN")
@@ -69,15 +82,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( HttpMethod.DELETE, "/api/userdata" ).hasRole("ADMIN")
 
 
-                .antMatchers( HttpMethod.POST, "/api/auth/signin").permitAll()
-                .antMatchers( HttpMethod.POST, "/api/auth/signup").permitAll()
 
 
-                .anyRequest().authenticated();
+
+                .anyRequest().authenticated().and()
+                .addFilterBefore( jwtFilter(), UsernamePasswordAuthenticationFilter.class )
+        ;
 
     }
 
 
+    //this exposes the parent class' AuthenticationManager
+    //as a bean to be use later
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

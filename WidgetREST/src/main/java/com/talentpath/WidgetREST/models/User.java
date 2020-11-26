@@ -30,7 +30,9 @@ public class User {
     @Size(max = 120)
     private String password;
 
-    @ManyToMany( fetch = FetchType.LAZY )       //don't load the roles from the db unless requested
+    //@ManyToMany( fetch = FetchType.LAZY )       //don't load the roles from the db unless requested
+                                                //annoying for now, we'll kill this
+    @ManyToMany( fetch = FetchType.EAGER )
     @JoinTable( name = "user_roles",
         joinColumns = @JoinColumn( name = "user_id"),
             //tells Hibernate a that foreign key called user_id should link to id

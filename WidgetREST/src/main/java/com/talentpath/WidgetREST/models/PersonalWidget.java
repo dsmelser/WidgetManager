@@ -1,5 +1,7 @@
 package com.talentpath.WidgetREST.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,6 +23,7 @@ public class PersonalWidget {
 //    @NotNull
 //    private Integer user_id;
 
+    @JsonIgnore
     @ManyToOne
     private User associatedUser;
 

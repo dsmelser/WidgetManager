@@ -22,7 +22,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User matching = userRepo
                 .findByUsername( username )
                 .orElseThrow(
-                        () -> new UsernameNotFoundException( "Could not find user with name: " + username ));
+                        () ->
+                                new UsernameNotFoundException( "Could not find user with name: " + username ));
 
         return new UserDetailImpl( matching );
 

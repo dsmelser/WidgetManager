@@ -61,6 +61,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication( authentication );
 
         String token = io.jsonwebtoken.Jwts.builder()
+
                         .setSubject( request.getUsername() )
                         .setIssuedAt( new Date())
                         .setExpiration( new Date(new Date().getTime() +  jwtExpirationMs ))
