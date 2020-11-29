@@ -9,6 +9,23 @@ public class JwtResponse {
 
     private Integer id;
 
+    private String userName;
+    private String email;
+    private List<String> roles;
+
+    public JwtResponse( String token, Integer id, String username, String email, List<String> roles ){
+        this.token = token;
+        this.id = id;
+        this.userName = username;
+        this.email = email;
+        this.roles = roles;
+    }
+
+    //TODO: see if this is necessary
+    public JwtResponse(){
+
+    }
+
     public String getToken() {
         return token;
     }
@@ -57,19 +74,5 @@ public class JwtResponse {
         this.roles = roles;
     }
 
-    private String userName;
-    private String email;
-    private List<String> roles;
 
-    public JwtResponse( String token, Integer id, String username, String email, List<String> roles ){
-        this.token = token;
-        this.id = id;
-        this.userName = username;
-        this.email = email;
-        this.roles = roles;
-    }
-
-    public JwtResponse(){
-
-    }
 }

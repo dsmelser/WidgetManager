@@ -5,6 +5,7 @@ import com.talentpath.WidgetREST.daos.UserRepository;
 import com.talentpath.WidgetREST.models.Role;
 import com.talentpath.WidgetREST.models.User;
 import com.talentpath.WidgetREST.security.*;
+import com.talentpath.WidgetREST.security.LoginRequest;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,11 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,6 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request){
 
-
-
         //authenticate user and generate jwt token
         //generate response object
 
@@ -69,9 +66,14 @@ public class AuthController {
                         .compact();
 
         return ResponseEntity.ok(
-                new JwtResponse( token, details.getId(), details.getUsername(), details.getEmail(),
-
-                        details.getAuthorities().stream().map( auth -> auth.getAuthority() ).collect(Collectors.toList())
+                new JwtResponse(
+                        token,
+                        details.getId(),
+                        details.getUsername(),
+                        details.getEmail(),
+                        details.getAuthorities().stream()
+                                .map( auth -> auth.getAuthority() )
+                                .collect(Collectors.toList())
 
                         ));
 

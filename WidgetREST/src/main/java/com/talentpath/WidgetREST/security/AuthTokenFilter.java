@@ -37,7 +37,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-            String token = extractJwt( request );
+
+        String token = extractJwt( request );
 
 
             if( token != null ) {
@@ -46,24 +47,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
-                if (token != null) {
-                    String userName = claims.getBody().getSubject();
+                String userName = claims.getBody().getSubject();
 
-                    UserDetails details = detailsService.loadUserByUsername(userName);
+                UserDetails details = detailsService.loadUserByUsername(userName);
 
-                    UsernamePasswordAuthenticationToken convertedToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    details,
-                                    null,
-                                    details.getAuthorities()
-                            );
+                UsernamePasswordAuthenticationToken convertedToken =
+                        new UsernamePasswordAuthenticationToken(
+                                details,
+                                null,
+                                details.getAuthorities()
+                        );
 
-                    convertedToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                convertedToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                    SecurityContextHolder.getContext().setAuthentication(convertedToken);
-                }
+                SecurityContextHolder.getContext().setAuthentication(convertedToken);
+
             } else {
                 //here we didn't try to send credentials
                 //but that might be ok if they're just signing in

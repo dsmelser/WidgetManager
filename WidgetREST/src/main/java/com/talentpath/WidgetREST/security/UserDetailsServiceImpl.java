@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .findByUsername( username )
                 .orElseThrow(
                         () ->
-                                new UsernameNotFoundException( "Could not find user with name: " + username ));
+                        new UsernameNotFoundException( "Could not find user with name: " + username ));
 
         return new UserDetailImpl( matching );
 
